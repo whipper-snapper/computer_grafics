@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+</head>
+<body>
+
+<canvas id='canvas1' height="500" width="500" style='border:1px solid'></canvas>
+<canvas id='canvas2' height="500" width="500" style='border:1px solid'></canvas>
+
+<script>
+	
+	let canvas1 = document.getElementById('canvas1');
+	let ctx1 = canvas1.getContext('2d');
+
+	let canvas2 = document.getElementById('canvas2');
+	let ctx2 = canvas2.getContext('2d');
+
+	let img = new Image();
+	img.src = 'awesome.jpg';
+
+
+	img.onload = function() {
+		ctx1.drawImage(img, 0, 0);
+
+		let img_data = ctx1.getImageData(0, 0, canvas1.width, canvas1.height);
+		let new_img_data = ctx2.createImageData(canvas1.height, canvas1.height);
+
+		img_data_length = img_data.height * img_data.width * 4;
+
+		let sum = -1;
+		for (let i = 0; i < img_data_length; i++) {
+
+			if (i % 4 == 0 && sum != -1) {
+				let mean = sum / 3;
+
+				new_img_data.data[i] = img_data.data[i];
+				new_img_data.data[i-1] = mean;
+				new_img_data.data[i-2] = mean;
+				new_img_data.data[i-3] = mean;
+
+				sum = 0;
+			} else {
+				sum += img_data.data[i];
+			}
+		}
+
+		console.log(new_img_data);
+
+		ctx2.putImageData(new_img_data, 0, 0);
+	}
+
+</script>
+
+</body>
+</html>

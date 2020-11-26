@@ -1,0 +1,49 @@
+<HTML>
+<BODY>
+<canvas id="canvas" width="500" height="500" style='border: 1px solid'>
+</canvas>
+<script>
+        function drawLine(context, xBegin, yBegin, xEnd, yEnd) {
+                const deltaX = Math.abs(xEnd - xBegin);
+                const deltaY = Math.abs(yEnd - yBegin);
+                
+                const signX = xBegin < xEnd ? 1 : -1;
+                const signY = yBegin < yEnd ? 1 : -1;
+                
+                let eps = deltaX - deltaY;
+
+                context.fillRect(xEnd, yEnd, 1, 1);
+                while (xBegin != xEnd || yBegin != yEnd) {
+                        context.fillRect(xBegin, yBegin, 1, 1);
+                        var eps2 = eps * 2;
+                        if(eps2 > -deltaY) {
+                                eps -= deltaY;
+                                xBegin += signX;
+                        }
+                        if (eps2 < deltaX) {
+                                eps += deltaX;
+                                yBegin += signY;
+                        }
+                }
+        }
+
+        var canvas = document.getElementById("canvas");
+        var ctx = canvas.getContext("2d");
+
+        var clickFlag = 0;
+        canvas.addEventListener("click", function(event){
+                        if (!clickFlag) {
+                                xBegin = event.offsetX;
+                                yBegin = event.offsetY;
+                                clickFlag = 1;
+                        } else {
+                                xEnd = event.offsetX;
+                                yEnd = event.offsetY;
+                                drawLine(ctx, xBegin, yBegin, xEnd, yEnd);
+                                clickFlag = 0;
+                        }
+                });
+
+</script>
+</BODY>
+</HTML>

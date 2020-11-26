@@ -1,0 +1,90 @@
+<HTML>
+<BODY>
+	
+<canvas id='canvas' height='700' width='1000' style='border:1px solid'>
+</canvas>
+
+<script>
+	// Country flag, that flies like dvd splash screen
+
+	let canvas = document.getElementById('canvas');
+	let ctx = canvas.getContext('2d')
+
+	const CELL_SIZE  = 20;
+	const FLAG_WIDTH = 10;
+	const FPS        = 1;
+	const SPEED      = 2;
+
+	let lgbt_map = [
+		'#FF0000',
+		'#FFA500',
+		'#FFFF00',
+		'#008000',
+		'#0000FF',
+		'#800080'
+	];
+
+
+	function randomInt(max) {
+		return Math.floor(Math.random() * max);
+	}
+
+
+	function printLgbt(x, y) {
+
+		for (let i = 0; i < lgbt_map.length; i++) {
+			for (let j = 0; j < FLAG_WIDTH; j++) {
+
+				ctx.fillStyle = lgbt_map[i];
+				ctx.fillRect(x+CELL_SIZE*j, y+CELL_SIZE*i, CELL_SIZE, CELL_SIZE);
+			}
+		}
+	};
+
+
+	function animateFigure() {
+		interval = setInterval(function() {
+
+			ctx.clearRect(0, 0, canvas.width, canvas.height);
+			printLgbt(current_x, current_y);
+
+			current_x += direction[0] * SPEED;
+			current_y += direction[1] * SPEED;
+
+			if (current_x >= (canvas.width - CELL_SIZE * FLAG_WIDTH) ||
+				current_x <= 0) {
+
+				direction[0] *= -1;
+			}
+			if (current_y >= (canvas.height - CELL_SIZE * lgbt_map.length) ||
+				current_y <= 0) {
+
+				direction[1] *= -1;
+			}
+
+		}, FPS);
+	}
+
+
+	let current_x = randomInt(canvas.width - CELL_SIZE * FLAG_WIDTH);
+	let current_y = randomInt(canvas.height - CELL_SIZE * lgbt_map.length);
+
+	// generating of random normalized direction
+	// (one of components will be equal to one, and other less than one)
+	let direction = [Math.random(), Math.random()];
+	if (direction[0] > direction[1]) {
+
+		direction[0] /= direction[0];
+		direction[1] /= direction[0];
+	} else {
+
+		direction[0] /= direction[1];
+		direction[1] /= direction[1];
+	}
+
+	animateFigure();
+	
+</script>
+
+</BODY>
+</HTML>
